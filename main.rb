@@ -27,6 +27,8 @@ class SiteBuilder
       pages.each do |key, val|
         all_jobs << val.jobs
       end
+      # Create a timestamp
+      all_jobs << Time.now.utc
       f.write(JSON.dump(all_jobs))
     end
   end
