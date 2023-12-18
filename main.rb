@@ -13,14 +13,20 @@ class SiteBuilder
     @site_names = ["GoRails", "WeWorkRemotely", "RubyOnRemote",
                    "RubyOnRailsJobs", "RailsHotwireJobs", "WeAreHiring"]
     @pages = {}
+    @mutex = Mutex.new
   end
 
   def create_site
+    threads = []
     site_names.each do |name|
-      page = Object.const_get(name).new
-      page.scrape_and_generate_page
-      pages[name.downcase.to_s] = page
+      threads << Thread.new do
+        page = Object.const_get(name).new
+        page.scrape_and_generate_page
+        @mutex.synchronize { pages[name.downcase.to_s] = page }
+      end
     end
+
+    threads.each(&:join)
 
     File.open('/home/kali/Documents/jobs/jobs.json', 'w') do |f|
       all_jobs = []

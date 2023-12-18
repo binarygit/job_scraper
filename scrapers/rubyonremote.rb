@@ -11,6 +11,7 @@ class RubyOnRemote
   def initialize
     @base_url = 'https://rubyonremote.com'
     @jobs = []
+    @mutex = Mutex.new
   end
 
   def scrape_and_generate_page
@@ -22,24 +23,28 @@ class RubyOnRemote
   private
 
   def scrape
+    threads = []
     (1..5).each do |page_num|
-      doc = Nokogiri::HTML(URI.open(scrap_url(page_num)))
-      job_postings = doc.css("a[href^='/jobs']")
+      threads << Thread.new do
+        doc = Nokogiri::HTML(URI.open(scrap_url(page_num)))
+        job_postings = doc.css("a[href^='/jobs']")
 
-      job_postings.each do |job|
-        anchor_tag = job
-        hash = {}
-        hash[:href] = base_url + anchor_tag['href']
+        job_postings.each do |job|
+          anchor_tag = job
+          hash = {}
+          hash[:href] = base_url + anchor_tag['href']
 
-        title_element = job.at_css('h2')
-        company_name =  job.at_css('h2 + p').text
-        hash[:title] = title_element.text + ' | ' + company_name
+          title_element = job.at_css('h2')
+          company_name =  job.at_css('h2 + p').text
+          hash[:title] = title_element.text + ' | ' + company_name
 
-        misc = job.css('div')[5]
-        hash[:misc] = misc.text.strip.gsub("\n", " ")
-        @jobs << hash
+          misc = job.css('div')[5]
+          hash[:misc] = misc.text.strip.gsub("\n", " ")
+          @mutex.synchronize { @jobs << hash }
+        end
       end
     end
+    threads.each(&:join)
   end
 
   private
