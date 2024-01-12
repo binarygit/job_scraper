@@ -11,7 +11,7 @@ class SiteBuilder
 
   def initialize
     @site_names = ["GoRails", "WeWorkRemotely", "RubyOnRemote",
-                   "RubyOnRailsJobs", "RailsHotwireJobs", "WeAreHiring"]
+                   "RubyOnRailsJobs", "RailsHotwireJobs", "WeAreHiring", "RailsJobBoard"]
     @pages = {}
     @mutex = Mutex.new
   end
