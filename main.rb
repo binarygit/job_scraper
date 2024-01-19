@@ -10,8 +10,8 @@ class SiteBuilder
   attr_reader :site_names, :pages
 
   def initialize
-    @site_names = ["GoRails", "WeWorkRemotely", "RubyOnRemote",
-                   "RubyOnRailsJobs", "RailsHotwireJobs", "WeAreHiring", "RailsJobBoard"]
+    @site_names = %w[GoRails WeWorkRemotely RubyOnRemote
+                     RubyOnRailsJobs RailsHotwireJobs WeAreHiring RailsJobBoard]
     @pages = {}
     @mutex = Mutex.new
   end
