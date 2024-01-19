@@ -27,12 +27,21 @@ class SiteBuilder
     end
 
     threads.each(&:join)
+    create_json_file
+  end
 
+  private
+
+  def create_json_file
     File.open('/home/kali/Documents/jobs/jobs.json', 'w') do |f|
       all_jobs = []
-      pages.each do |key, val|
+
+      pages.each_value do |val|
         all_jobs << val.jobs
       end
+
+      all_jobs.flatten!
+
       # Create a timestamp
       all_jobs << Time.now.utc
       f.write(JSON.dump(all_jobs))
