@@ -22,7 +22,7 @@ class WeWorkRemotely
 
   def scrape
     doc = Nokogiri::HTML(URI.open(scrap_url))
-    job_postings = doc.css('.jobs li')
+    job_postings = doc.css('#job_list li')
     # The last element is an li containing the link
     # to "back to all jobs"
     # so we discard it
