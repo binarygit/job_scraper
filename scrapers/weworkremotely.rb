@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 require 'nokogiri'
 require 'open-uri'
+require 'debug'
 require_relative '../modules/page_generator'
 
 class WeWorkRemotely
@@ -35,11 +36,11 @@ class WeWorkRemotely
       hash = {}
       hash[:href] = base_url + anchor_tag['href']
 
-      title = job.at_css('.title').text
+      title = job.at_css('.new-listing__header__title').text
       hash[:title] = title
 
-      type = job.css('.company')[1].text
-      region = job.at_css('.region.company').text
+      type = job.css('.new-listing__company-name').text
+      region = job.at_css('.new-listing__categories').text
       hash[:misc] = type + "/" + region
       @jobs << hash
     end
