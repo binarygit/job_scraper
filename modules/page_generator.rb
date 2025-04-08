@@ -4,7 +4,7 @@ module PageGenerator
   def generate_page
     template = ERB.new File.read('templates/index.html.erb')
     html = template.result(binding)
-    File.write("/home/kali/Documents/jobs/#{file_name}", html)
+    File.write(File.expand_path("~/Documents/jobs/#{file_name}"), html)
   end
 
   private

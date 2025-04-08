@@ -2,6 +2,8 @@ require 'debug'
 require 'erb'
 require 'json'
 
+Dir.chdir(__dir__)
+
 Dir.new('./scrapers').children.each do |file|
   require_relative "./scrapers/#{file}"
 end
@@ -33,7 +35,7 @@ class SiteBuilder
   private
 
   def create_json_file
-    File.open('/home/kali/Documents/jobs/jobs.json', 'w') do |f|
+    File.open(File.expand_path('~/Documents/jobs/jobs.json'), 'w') do |f|
       all_jobs = []
 
       pages.each_value do |val|
