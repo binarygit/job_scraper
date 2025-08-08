@@ -21,6 +21,10 @@ class SiteBuilder
   def create_site
     threads = []
     site_names.each do |name|
+      # There's a bug that's not letting me scrape this
+      next if name == 'WeWorkRemotely'
+      # Looks like the site's url changed and it doesn't have many jobs anyway
+      next if name == 'WeAreHiring'
       threads << Thread.new do
         page = Object.const_get(name).new
         page.scrape_and_generate_page
