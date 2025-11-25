@@ -2,6 +2,7 @@
 require 'debug'
 require 'nokogiri'
 require 'open-uri'
+require 'debug'
 require_relative '../modules/page_generator'
 
 class RailsHotwireJobs
@@ -22,8 +23,14 @@ class RailsHotwireJobs
   private
 
   def scrape
-    doc = Nokogiri::HTML(URI.open(base_url))
-    job_postings = doc.css('body > div li')
+    begin
+      # it's taking a long time to open so had to have a timeout here
+      doc = Nokogiri::HTML(URI.open(base_url, read_timeout: 5, open_timeout: 5))
+    rescue Net::OpenTimeout
+      puts "RailsHotwireJobs taking too long to get"
+      return
+    end
+    job_postings = doc.css("body > div ul[role='list'] li")
 
     job_postings.each do |job|
       anchor_tag = job.at_css('a')
